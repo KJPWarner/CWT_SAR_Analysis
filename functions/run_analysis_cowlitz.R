@@ -226,6 +226,53 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
       xlab(label="Adults Per Adult")+
       theme_bw()
     print(p5)
+    
+    set_theme(base = theme_bw()
+    )
+    p6<-plot_model(mod3,type = "pred",title ="", fill = "Dark2",terms=c("brood_year"))+
+      theme_sjplot2()+
+      aes(color=group,fill=group) +
+      xlab("Brood Year")+
+      theme(legend.position = "none") +
+      geom_hline(yintercept=0)+
+      ylab("Smolt to Adult Survival (escapement + harvest) ")
+    print(p6)
+    
+    p7<-plot_model(mod3,type = "pred",title ="", colors = "Dark2",terms=c("first_release_doy"))+
+      theme_sjplot2()+
+      aes(color=group,fill=group) +
+      theme(legend.position = "none") +
+      scale_y_continuous(labels = scales::percent_format(accuracy = .1))+
+      geom_hline(yintercept=0)+
+      ylab("Smolt to Adult (escapement + harvest) Survival ")
+    print(p7)
+    
+    p8<-plot_model(mod3,type = "pred",title ="", colors = "Dark2",terms=c("avg_weight"))+
+      theme_sjplot2()+
+      aes(color=group,fill=group) +
+      theme(legend.position = "none") +
+      scale_y_continuous(labels = scales::percent_format(accuracy = .1))+
+      geom_hline(yintercept=0)+
+      xlab("Mean Weight (grams)")+
+      ylab("Smolt to Adult (escapement + harvest) Survival ")
+    print(p8)
+    
+    p9<-ggplot(dat,aes(x=avg_weight))+
+      geom_histogram(fill="#69b3a2", color="#e9ecef")+
+      xlab("Weight (g)")+
+      ylab("Count of CWT Tag Groups")
+    
+    p10<-ggplot(dat,aes(x=first_release_doy))+
+      geom_histogram(fill="#69b3a2", color="#e9ecef")+
+      xlab("Day of Year of First Release")+
+      ylab("Count of CWT Tag Groups")
+    
+    p11<-ggplot(dat,aes(x=brood_year))+
+      geom_histogram(fill="#69b3a2", color="#e9ecef")+
+      xlab("Brood Year")+
+      ylab("Count of CWT Tag Groups")
+    
+    grid.arrange(p9,p10,ncol=2)
 
     dev.off()
   }
