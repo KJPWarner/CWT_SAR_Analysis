@@ -165,23 +165,28 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
     colors<-data.frame(col_list,unique(newdat$avg_weight))
     colnames(colors)<-c("col_list","avg_weight")
     newdat<-merge(newdat,colors,by="avg_weight")
-    p<-ggplot(newdat,aes(y=X50.,x=first_release_doy,group=factor(avg_weight)))+
-      facet_wrap(~avg_weight)+
-      geom_ribbon(aes(ymin=X2.5.,ymax=X97.5.,),alpha=0.2,fill=newdat$col_list,color=NA)+
-      geom_ribbon(aes(ymin=X25.,ymax=X75.),alpha=0.2,fill=newdat$col_list,color=NA)+
+    
+    
+    # p<-ggplot(newdat,aes(y=X50.,x=first_release_doy,group=factor(avg_weight)))+
+    #   facet_wrap(~avg_weight)+
+    #   geom_ribbon(aes(ymin=X2.5.,ymax=X97.5.,),alpha=0.2,fill=newdat$col_list,color=NA)+
+    #   geom_ribbon(aes(ymin=X25.,ymax=X75.),alpha=0.2,fill=newdat$col_list,color=NA)+
+    #   theme(legend.justification = "right")+
+    #   scale_colour_manual(values=col_list)+
+    #   geom_line(aes(color=factor(avg_weight)),size=2)+
+    #   ylab(label="SAR")+
+    #   theme_bw()
+    # print(p)
+    
+    #Effects of Release Day of Year and Weight on Predicted SAR
+    p1<-ggplot(newdat,aes(y=X50.,x=first_release_doy,group=factor(avg_weight)))+
       theme(legend.justification = "right")+
       scale_colour_manual(values=col_list)+
       geom_line(aes(color=factor(avg_weight)),size=2)+
       ylab(label="SAR")+
+      #title(main="Effects of Release Day of Year and Weight on Predicted SAR")+
       theme_bw()
-    print(p)
-    p<-ggplot(newdat,aes(y=X50.,x=first_release_doy,group=factor(avg_weight)))+
-      theme(legend.justification = "right")+
-      scale_colour_manual(values=col_list)+
-      geom_line(aes(color=factor(avg_weight)),size=2)+
-      ylab(label="SAR")+
-      theme_bw()
-    print(p)
+    print(p1)
 
     
     dat2<-data.frame(read.csv("supplementaldata/growthtrajectories.csv"))
@@ -198,6 +203,7 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
       ylab(label="SAR")+
       xlab(label="Month")+
       scale_x_date(date_label="%m",breaks=date_breaks(width = "1 month"))+
+      #title(main="Predicted SAR across time during rearing by growth trajectory")+
       theme_bw()
     print(p2)
     
@@ -207,6 +213,7 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
       ylab(label="Adults Per Adult")+
       xlab(label="Month")+
       scale_x_date(date_label="%m",breaks=date_breaks(width = "1 month"))+
+      #title(main="Spawners per Spawner (replacement) by growth trajectory *** remember to re-run without escapement recoveries")+
       theme_bw()
     print(p3)
     
@@ -216,6 +223,7 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
       ylab(label="Adult Returns Per kg of smolts released")+
       xlab(label="Month")+
       scale_x_date(date_label="%m",breaks=date_breaks(width = "1 month"))+
+      #title(main="Adults per gram of smolts by growth trajectory")+
       theme_bw()
     print(p4)
     
@@ -235,6 +243,7 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
       xlab("Brood Year")+
       theme(legend.position = "none") +
       geom_hline(yintercept=0)+
+      #title(main="Predicted SAR by brood year for fish of average size/weight")+
       ylab("Smolt to Adult Survival (escapement + harvest) ")
     print(p6)
     
@@ -244,6 +253,7 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
       theme(legend.position = "none") +
       scale_y_continuous(labels = scales::percent_format(accuracy = .1))+
       geom_hline(yintercept=0)+
+      #title(main="Predicted SAR by day of year of release for fish of average smolt weight in an average year")+
       ylab("Smolt to Adult (escapement + harvest) Survival ")
     print(p7)
     
@@ -254,6 +264,7 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
       scale_y_continuous(labels = scales::percent_format(accuracy = .1))+
       geom_hline(yintercept=0)+
       xlab("Mean Weight (grams)")+
+      #title(main="Predicted SAR by smolt weight in an average brood year released on the average date")+
       ylab("Smolt to Adult (escapement + harvest) Survival ")
     print(p8)
     
@@ -275,5 +286,16 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
     grid.arrange(p9,p10,ncol=2)
 
     dev.off()
+    
+    print(p1)
+    print(p2)
+    print(p3)
+    print(p4)
+    print(p5)
+    print(p6)
+    print(p7)
+    print(p8)
+    print(p9)
+    grid.arrange(p9,p10,ncol=2)
   }
 }
