@@ -136,6 +136,15 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
   # plot(logit(mod3$fitted.values)~logit(mod1$fitted.values))
     # abline(a=0,b=1)
     #AIC(mod3)
+    
+    # #print out fitted estimates with data
+    # fitted<-data.frame(mod3$fitted)
+    # names(fitted)<-"fitted"
+    # dat%>%
+    #   filter(!is.na(avg_weight))%>%
+    #   bind_cols(fitted)%>%
+    #   write_csv(paste(getwd(),"/results/",datafile,sep=""))
+    # 
 
     #plot preds by date and size
     pdf(paste(getwd(),"/results/","SAR_Analysis_tag_code_plots.pdf",sep=""))
