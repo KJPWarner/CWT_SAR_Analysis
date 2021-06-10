@@ -281,19 +281,49 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
       geom_histogram(fill="#69b3a2", color="#e9ecef")+
       xlab("Weight (g)")+
       ylab("Count of CWT Tag Groups")
+    print(p9)
     
     p10<-ggplot(dat,aes(x=first_release_doy))+
       geom_histogram(fill="#69b3a2", color="#e9ecef")+
       xlab("Day of Year of First Release")+
       ylab("Count of CWT Tag Groups")
+    print(p10)
     
-    p11<-ggplot(dat,aes(x=brood_year))+
+    p11<-ggplot(dat%>%filter(),aes(y=first_release_doy,x=brood_year))+
+      geom_point()+
+      ylim(0,365)+
+      xlab("Day of Year of First Release")+
+      ylab("Release Date for Individual CWT Group")
+    print(p11)
+    
+    p12<-ggplot(dat,aes(x=brood_year))+
       geom_histogram(fill="#69b3a2", color="#e9ecef")+
       xlab("Brood Year")+
       ylab("Count of CWT Tag Groups")
+    print(p12)
     
-    grid.arrange(p9,p10,ncol=2)
+    p13<-ggplot(dat,aes(x=avg_weight,y=avg_length))+
+      geom_point()
+    print(p13)
+    
 
+    #compare options
+
+    optiondat<-data.frame(read_csv(paste(getwd(),"/supplementaldata/Cowlitz_SpCk_springyearling_options.csv",sep="")))%>%
+      dplyr::select(first_release_doy,weight_fpp,avg_weight,count,option)%>%
+      add_column(brood_year=2010)
+    
+    optiondat<-optiondat%>%
+      mutate(
+             pred_SAR_2010 = predict(mod3,newdata=optiondat,type="response"),
+             pred_return_2010 = pred_SAR_2010 * count,
+             relative_return = pred_return_2010/max(pred_return_2010),
+             first_release_date = format(as.Date(first_release_doy,origin="1972-01-01"),"%b-%d")
+             )
+    p14<-ggplot(optiondat, aes(x=weight_fpp,y=relative_return,color=as.factor(first_release_date)))+
+      geom_point()
+    print(p14)
+    
     dev.off()
     
     print(p1)
@@ -306,5 +336,9 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
     print(p8)
     print(p9)
     grid.arrange(p9,p10,ncol=2)
-  }
+    print(p11)
+    print(p12)
+    print(p13)
+    print(p14)
+      }
 }
