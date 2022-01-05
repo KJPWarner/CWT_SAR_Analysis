@@ -310,14 +310,14 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
     #compare options
 
     optiondat<-data.frame(read_csv(paste(getwd(),"/supplementaldata/Cowlitz_SpCk_springyearling_options.csv",sep="")))%>%
-      dplyr::select(first_release_doy,weight_fpp,avg_weight,count,option)%>%
-      add_column(brood_year=2010)
+      mutate(brood_year=2010)
     
-    optiondat<-optiondat%>%
+    Optiondat<-optiondat%>%
+      dplyr::select(first_release_doy,weight_fpp,avg_weight,count,option)%>%
       mutate(
-             pred_SAR_2010 = predict(mod3,newdata=optiondat,type="response"),
-             pred_return_2010 = pred_SAR_2010 * count,
-             relative_return = pred_return_2010/max(pred_return_2010),
+             pred_SAR = predict(mod3,newdata=optiondat,type="response", exclude = 's(brood_year,bs="ps",m=2,k=c(max(dat$brood_year)-min(dat$brood_year))+1)'),
+             pred_return = pred_SAR * count,
+             relative_return = pred_return/max(pred_return),
              first_release_date = format(as.Date(first_release_doy,origin="1972-01-01"),"%b-%d")
              )
     p14<-ggplot(optiondat, aes(x=weight_fpp,y=relative_return,color=as.factor(first_release_date)))+
@@ -340,5 +340,20 @@ run_analysis_cowlitz<-function(datafile,bygrouportagcode,grouplist,options){
     print(p12)
     print(p13)
     print(p14)
-      }
+    
+    
+    optiondat2<-data.frame(read_csv(paste(getwd(),"/supplementaldata/Cowlitz_SpCk_springyearling_options_v2.csv",sep="")))%>%
+      mutate(brood_year=2010)
+    
+    Optiondat2<-optiondat2%>%
+      dplyr::select(first_release_doy,weight_fpp,avg_weight,option)%>%
+      mutate(
+        pred_SAR = predict(mod3,newdata=optiondat2,type="response", exclude = 's(brood_year,bs="ps",m=2,k=c(max(dat$brood_year)-min(dat$brood_year))+1)'),
+        relative_return = pred_SAR/max(pred_SAR,na.rm=T),
+        first_release_date = format(as.Date(first_release_doy,origin="1972-01-01"),"%b-%d")
+      )%>%filter(!is.na(pred_SAR))
+    write.csv(Optiondat2,"results/Optiondat2.csv",row.names = F)
+    write.csv(Optiondat,"results/Optiondat.csv",row.names = F)
+    
+    }
 }

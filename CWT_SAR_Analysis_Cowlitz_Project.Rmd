@@ -64,7 +64,8 @@ using("lubridate",
       "sjPlot",
       "sjmisc",
       "gridExtra",
-      "scales"
+      "scales",
+      "kableExtra"
 )
 if("MASS" %in% (.packages())){
   detach("package:MASS", unload=TRUE) 
